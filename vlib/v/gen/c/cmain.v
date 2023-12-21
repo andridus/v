@@ -25,7 +25,15 @@ pub fn (mut g Gen) gen_c_main() {
 		g.gen_c_android_sokol_main()
 	} else {
 		g.gen_c_main_header()
-		g.writeln('\tmain__main();')
+		if g.is_gui_app() {
+				$if msvc {
+					g.writeln('\tmain__main(instance, prev_instance, cmd_line, show_cmd);')
+				} $else {
+					g.writeln('\tmain__main();')
+				}
+		}else{
+			g.writeln('\tmain__main();')
+		}
 		g.gen_c_main_footer()
 		if g.pref.printfn_list.len > 0 && 'main' in g.pref.printfn_list {
 			println(g.out.after(main_fn_start_pos))
